@@ -32,6 +32,7 @@ let
 
       dependencies = [
         nixology.core.schemas
+        nixology.core.transposition
       ];
 
       meta = {

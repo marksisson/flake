@@ -2,25 +2,9 @@ local@{ ... }:
 let
   inherit (local.inputs.self.components) nixology;
 
-  inherit (local.inputs.core.lib) mkComponentCheck;
-
   implementation = local.inputs.core.inputs.flake-parts.flakeModules.easyOverlay;
-
-  check =
-    module@{ ... }:
-    {
-      perSystem = mkComponentCheck {
-        name = "nixology-extra-easyOverlay";
-        component = nixology.extra.easyOverlay;
-        inherit (module) config;
-      };
-    };
 in
 {
-  imports = [
-    check
-  ];
-
   flake.components = {
     nixology.extra.easyOverlay = {
       inherit implementation;
