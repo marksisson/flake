@@ -17,7 +17,7 @@ let
         cfg = module.config.pre-commit;
       in
       {
-        shellEnvs.default = mkIf (cfg.settings.enabledPackages != [ ]) {
+        shellEnvironments.default = mkIf (cfg.settings.enabledPackages != [ ]) {
           packages = cfg.settings.enabledPackages;
           shellHook = cfg.shellHook;
         };
@@ -38,7 +38,7 @@ in
       inherit implementation;
 
       dependencies = [
-        nixology.extra.shellEnvs
+        nixology.extra.shellEnvironments
         nixology.systems.default
       ];
 

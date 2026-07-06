@@ -1,19 +1,22 @@
 { ... }@local:
 let
   inherit (local.inputs) core self;
+
   inherit (self.components) nixology;
+
+  inherit (core.lib.components) uses;
 in
 {
   flake.lib = core.lib.extend (
-    _final: prev: {
+    final: _prev: {
       parts.mkFlake =
         args: module:
-        prev.mkFlake args {
+        final.mkFlake args {
           imports = [
             module
           ]
           ++ [
-            (core.lib.components.uses {
+            (uses {
               components = [
                 nixology.flake.apps
                 nixology.flake.checks

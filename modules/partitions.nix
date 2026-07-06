@@ -1,4 +1,4 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.lib)
     genAttrs

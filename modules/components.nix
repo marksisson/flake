@@ -1,5 +1,5 @@
-local@{ ... }:
+{ ... }@local:
 {
-  # export core components as top-level components
+  # export core.nix components as flake.nix components
   flake.components = local.inputs.core.components;
 }

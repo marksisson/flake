@@ -1,4 +1,4 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.self.components) nixology;
 
@@ -39,7 +39,7 @@ let
   inherit (local.lib.attrsets) recursiveUpdate;
 
   implementation =
-    module@{ ... }:
+    { ... }@module:
     let
       cfg = module.config;
 

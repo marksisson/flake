@@ -1,4 +1,4 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.core.lib.components) uses;
   inherit (local.inputs.core.components) nixology;

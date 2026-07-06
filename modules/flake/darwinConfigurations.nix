@@ -1,10 +1,8 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.self.components) nixology;
 
-  inherit (local.lib)
-    mkOption
-    ;
+  inherit (local.lib) mkOption;
 
   inherit (local.lib.types)
     lazyAttrsOf
@@ -15,27 +13,34 @@ let
   inherit (local.config.partitions.schemas.extraInputs) flake-schemas;
 
   implementation = {
-    options.flake.darwinConfigurations = mkOption {
-      type = lazyAttrsOf raw;
-      default = { };
-      description = ''
-        Instantiated Darwin configurations. Used by `darwin-rebuild`.
+    options = {
+      flake.darwinConfigurations = mkOption {
+        type = lazyAttrsOf raw;
 
-        `darwinConfigurations` is for specific machines. For reusable
-        configurations, expose modules through `darwinModules` instead.
-      '';
-      example = literalExpression ''
-        {
-          my-machine = inputs.nix-darwin.lib.darwinSystem {
-            modules = [ ./configuration.nix ];
-            specialArgs = { inherit inputs; };
-          };
-        }
-      '';
+        default = { };
+
+        description = ''
+          Instantiated Darwin configurations. Used by `darwin-rebuild`.
+
+          `darwinConfigurations` is for specific machines. For reusable
+          configurations, expose modules through `darwinModules` instead.
+        '';
+
+        example = literalExpression ''
+          {
+            my-machine = inputs.nix-darwin.lib.darwinSystem {
+              modules = [ ./configuration.nix ];
+              specialArgs = { inherit inputs; };
+            };
+          }
+        '';
+      };
     };
 
-    config.flake.schemas = {
-      inherit (flake-schemas.exportedSchemas) darwinConfigurations;
+    config = {
+      flake.schemas = {
+        inherit (flake-schemas.exportedSchemas) darwinConfigurations;
+      };
     };
   };
 in

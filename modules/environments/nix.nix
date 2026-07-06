@@ -1,4 +1,4 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.self.components) nixology;
 
@@ -8,9 +8,9 @@ let
 
   implementation = {
     perSystem =
-      module@{ pkgs, ... }:
+      { pkgs, ... }@module:
       {
-        shellEnvs.nix.packages = [
+        shellEnvironments.nix.packages = [
           pkgs.nix-output-monitor
         ];
 
@@ -54,7 +54,7 @@ in
       inherit implementation;
 
       dependencies = [
-        nixology.extra.shellEnvs
+        nixology.extra.shellEnvironments
         nixology.tools.treefmt
       ];
 

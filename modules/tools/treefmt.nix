@@ -18,7 +18,7 @@ in
       inherit implementation;
 
       dependencies = [
-        nixology.extra.shellEnvs
+        nixology.extra.shellEnvironments
         nixology.flake.checks
         nixology.flake.formatter
         nixology.systems.default

@@ -1,6 +1,8 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.self.components) nixology;
+
+  inherit (local.inputs.core.inputs) flake-parts;
 
   inherit (local.config.partitions.schemas.extraInputs) flake-schemas;
 
@@ -21,7 +23,7 @@ let
     let
       implementation = {
         imports = [
-          "${local.inputs.core.inputs.flake-parts}/modules/${name}.nix"
+          "${flake-parts}/modules/${name}.nix"
         ];
 
         config.flake.schemas.${name} = flake-schemas.exportedSchemas.${name};

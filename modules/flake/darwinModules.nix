@@ -1,4 +1,4 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.self.components) nixology;
 
@@ -14,44 +14,50 @@ let
     ;
 
   inherit (local.config.partitions.schemas.extraInputs) flake-schemas;
+
   moduleLocation = "${local.inputs.self.outPath}/flake.nix";
 
   implementation = {
-    options.flake.darwinModules = mkOption {
-      type = lazyAttrsOf deferredModule;
-      default = { };
+    options = {
+      flake.darwinModules = mkOption {
+        type = lazyAttrsOf deferredModule;
 
-      apply = mapAttrs (
-        name: module: {
-          _class = "darwin";
-          _file = "${moduleLocation}#darwinModules.${name}";
-          imports = [ module ];
-        }
-      );
+        default = { };
 
-      description = ''
-        Darwin modules.
+        apply = mapAttrs (
+          name: module: {
+            _class = "darwin";
+            _file = "${moduleLocation}#darwinModules.${name}";
+            imports = [ module ];
+          }
+        );
 
-        Use this for reusable Darwin configuration, service modules, and
-        other nix-darwin modules.
-      '';
+        description = ''
+          Darwin modules.
 
-      example = literalExpression ''
-        {
-          configuration = { pkgs, ... }: {
-            environment.systemPackages = [
-              pkgs.vim
-              pkgs.wget
-            ];
+          Use this for reusable Darwin configuration, service modules, and
+          other nix-darwin modules.
+        '';
 
-            programs.zsh.enable = true;
-          };
-        }
-      '';
+        example = literalExpression ''
+          {
+            configuration = { pkgs, ... }: {
+              environment.systemPackages = [
+                pkgs.vim
+                pkgs.wget
+              ];
+
+              programs.zsh.enable = true;
+            };
+          }
+        '';
+      };
     };
 
-    config.flake.schemas = {
-      inherit (flake-schemas.exportedSchemas) darwinModules;
+    config = {
+      flake.schemas = {
+        inherit (flake-schemas.exportedSchemas) darwinModules;
+      };
     };
   };
 in

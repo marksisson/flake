@@ -1,8 +1,10 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.self.components) nixology;
 
-  implementation = local.inputs.core.inputs.flake-parts.flakeModules.easyOverlay;
+  inherit (local.inputs.core.inputs) flake-parts;
+
+  implementation = flake-parts.flakeModules.easyOverlay;
 in
 {
   flake.components = {

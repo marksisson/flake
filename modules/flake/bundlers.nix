@@ -1,4 +1,4 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.self.components) nixology;
 
@@ -11,8 +11,10 @@ let
       flake-parts.flakeModules.bundlers
     ];
 
-    config.flake.schemas = {
-      inherit (flake-schemas.exportedSchemas) bundlers;
+    config = {
+      flake.schemas = {
+        inherit (flake-schemas.exportedSchemas) bundlers;
+      };
     };
   };
 in

@@ -1,4 +1,4 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.self.components) nixology;
 
@@ -24,7 +24,7 @@ let
       options.perSystem = flake-parts-lib.mkPerSystemOption (
         { pkgs, ... }:
         {
-          options.shellEnvs = mkOption {
+          options.shellEnvironments = mkOption {
             type = lazyAttrsOf (submodule {
               options = {
                 inputsFrom = mkOption {
@@ -65,22 +65,24 @@ let
         }
       );
 
-      config.perSystem =
-        module@{ pkgs, ... }:
-        mkIf (module.config.shellEnvs != { }) {
-          devShells = mapAttrs (
-            name: shellEnv:
-            pkgs.mkShell.override shellEnv.mkShellOverrides {
-              inherit name;
-              inherit (shellEnv)
-                inputsFrom
-                packages
-                shellHook
-                stdenv
-                ;
-            }
-          ) module.config.shellEnvs;
-        };
+      config = {
+        perSystem =
+          { pkgs, ... }@module:
+          mkIf (module.config.shellEnvironments != { }) {
+            devShells = mapAttrs (
+              name: shellEnv:
+              pkgs.mkShell.override shellEnv.mkShellOverrides {
+                inherit name;
+                inherit (shellEnv)
+                  inputsFrom
+                  packages
+                  shellHook
+                  stdenv
+                  ;
+              }
+            ) module.config.shellEnvironments;
+          };
+      };
     };
 
   partitionedImplementation = {
@@ -93,7 +95,7 @@ in
   ];
 
   flake.components = {
-    nixology.extra.shellEnvs = {
+    nixology.extra.shellEnvironments = {
       inherit implementation;
 
       dependencies = [

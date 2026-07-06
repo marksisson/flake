@@ -1,4 +1,4 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.self.components) nixology;
 
@@ -14,44 +14,50 @@ let
     ;
 
   inherit (local.config.partitions.schemas.extraInputs) flake-schemas;
+
   moduleLocation = "${local.inputs.self.outPath}/flake.nix";
 
   implementation = {
-    options.flake.homeModules = mkOption {
-      type = lazyAttrsOf deferredModule;
-      default = { };
+    options = {
+      flake.homeModules = mkOption {
+        type = lazyAttrsOf deferredModule;
 
-      apply = mapAttrs (
-        name: module: {
-          _class = "home";
-          _file = "${moduleLocation}#homeModules.${name}";
-          imports = [ module ];
-        }
-      );
+        default = { };
 
-      description = ''
-        Home Manager modules.
+        apply = mapAttrs (
+          name: module: {
+            _class = "home";
+            _file = "${moduleLocation}#homeModules.${name}";
+            imports = [ module ];
+          }
+        );
 
-        Use this for reusable Home Manager configuration, service modules, and
-        other home-manager modules.
-      '';
+        description = ''
+          Home Manager modules.
 
-      example = literalExpression ''
-        {
-          bash = { pkgs, ... }: {
-            programs.bash = {
-              enable = true;
-              shellAliases.ll = "ls -l";
+          Use this for reusable Home Manager configuration, service modules, and
+          other home-manager modules.
+        '';
+
+        example = literalExpression ''
+          {
+            bash = { pkgs, ... }: {
+              programs.bash = {
+                enable = true;
+                shellAliases.ll = "ls -l";
+              };
+
+              home.packages = [ pkgs.hello ];
             };
-
-            home.packages = [ pkgs.hello ];
-          };
-        }
-      '';
+          }
+        '';
+      };
     };
 
-    config.flake.schemas = {
-      inherit (flake-schemas.exportedSchemas) homeModules;
+    config = {
+      flake.schemas = {
+        inherit (flake-schemas.exportedSchemas) homeModules;
+      };
     };
   };
 in

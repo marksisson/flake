@@ -1,22 +1,28 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.self.components) nixology;
 
+  inherit (local.inputs.core.inputs) flake-parts;
+
   implementation = {
     imports = [
-      local.inputs.core.inputs.flake-parts.flakeModules.modules
+      flake-parts.flakeModules.modules
     ];
 
-    config.flake.schemas.modules = schema;
-  };
+    config = {
+      flake.schemas = {
 
-  schema = {
-    version = 1;
-    doc = ''
-      The `modules` flake output contains modules for any module system.
-    '';
-    inventory = _output: {
-      what = "modules for use by other module systems";
+        modules = {
+          version = 1;
+          doc = ''
+            The `modules` flake output contains modules for any module system.
+          '';
+          inventory = _output: {
+            what = "modules for use by other module systems";
+          };
+        };
+
+      };
     };
   };
 in
