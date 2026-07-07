@@ -1,8 +1,6 @@
 { ... }@local:
 let
-  inherit (local.lib)
-    genAttrs
-    ;
+  inherit (local.lib) genAttrs;
 
   development =
     let
@@ -21,12 +19,10 @@ let
       partitionedAttrs = genAttrs [ "schemas" ] (_: partition);
       partitions.${partition}.extraInputsFlake = ../partitions/${partition};
     };
-
-  module = {
-    imports = [
-      development
-      schemas
-    ];
-  };
 in
-module
+{
+  imports = [
+    development
+    schemas
+  ];
+}

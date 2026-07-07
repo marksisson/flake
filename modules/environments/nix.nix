@@ -2,9 +2,7 @@
 let
   inherit (local.inputs.self.components) nixology;
 
-  inherit (local.lib)
-    mkDefault
-    ;
+  inherit (local.lib) mkDefault;
 
   implementation = {
     perSystem =

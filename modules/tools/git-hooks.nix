@@ -1,18 +1,18 @@
-local@{ ... }:
+{ ... }@local:
 let
   inherit (local.inputs.self.components) nixology;
 
-  inherit (local.lib) mkIf;
+  inherit (local.config.partitions.development.extraInputs) git-hooks;
 
-  gitHooks = local.config.partitions.development.extraInputs.git-hooks;
+  inherit (local.lib) mkIf;
 
   implementation = {
     imports = [
-      gitHooks.flakeModule
+      git-hooks.flakeModule
     ];
 
     perSystem =
-      module@{ ... }:
+      { ... }@module:
       let
         cfg = module.config.pre-commit;
       in

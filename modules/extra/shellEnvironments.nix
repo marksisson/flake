@@ -18,10 +18,13 @@ let
     submodule
     ;
 
-  implementation =
-    { flake-parts-lib, ... }:
-    {
-      options.perSystem = flake-parts-lib.mkPerSystemOption (
+  inherit (local.inputs) core;
+
+  inherit (core.lib.parts) mkPerSystemOption;
+
+  implementation = {
+    options = {
+      perSystem = mkPerSystemOption (
         { pkgs, ... }:
         {
           options.shellEnvironments = mkOption {
@@ -64,26 +67,27 @@ let
           };
         }
       );
-
-      config = {
-        perSystem =
-          { pkgs, ... }@module:
-          mkIf (module.config.shellEnvironments != { }) {
-            devShells = mapAttrs (
-              name: shellEnv:
-              pkgs.mkShell.override shellEnv.mkShellOverrides {
-                inherit name;
-                inherit (shellEnv)
-                  inputsFrom
-                  packages
-                  shellHook
-                  stdenv
-                  ;
-              }
-            ) module.config.shellEnvironments;
-          };
-      };
     };
+
+    config = {
+      perSystem =
+        { pkgs, ... }@module:
+        mkIf (module.config.shellEnvironments != { }) {
+          devShells = mapAttrs (
+            name: shellEnv:
+            pkgs.mkShell.override shellEnv.mkShellOverrides {
+              inherit name;
+              inherit (shellEnv)
+                inputsFrom
+                packages
+                shellHook
+                stdenv
+                ;
+            }
+          ) module.config.shellEnvironments;
+        };
+    };
+  };
 
   partitionedImplementation = {
     partitions.development.module = implementation;

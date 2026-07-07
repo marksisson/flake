@@ -1,7 +1,9 @@
 { ... }@local:
 let
-  inherit (local.inputs.core.lib.components) uses;
-  inherit (local.inputs.core.components) nixology;
+  inherit (local.inputs) core;
+
+  inherit (core.components) nixology;
+  inherit (core.lib.components) uses;
 in
 uses {
   components = [
