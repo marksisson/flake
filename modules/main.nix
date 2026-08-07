@@ -10,5 +10,6 @@ uses {
     nixology.core.components
     nixology.core.lib
     nixology.core.partitions
+    nixology.extra.touchup
   ];
 }

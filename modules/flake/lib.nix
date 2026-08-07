@@ -31,6 +31,23 @@ in
             })
           ];
         };
+
+      resuableModules =
+        {
+          flakeref,
+          name,
+          modules,
+        }:
+        {
+          imports = [ nixology.flake.modules.module ];
+          flake.modules = builtins.mapAttrs (class: module: {
+            ${name} = {
+              key = "${flakeref}#components.${name}";
+              imports = [ module ];
+              _class = class;
+            };
+          }) modules;
+        };
     }
   );
 }

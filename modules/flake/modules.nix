@@ -27,10 +27,6 @@ let
   };
 in
 {
-  imports = [
-    implementation
-  ];
-
   flake.components = {
     nixology.flake.modules = {
       inherit implementation;
