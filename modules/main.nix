@@ -7,7 +7,6 @@ let
 in
 uses {
   components = [
-    nixology.core.debug
     nixology.core.components
     nixology.core.lib
     nixology.core.partitions
