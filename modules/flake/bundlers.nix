@@ -1,12 +1,11 @@
-{ ... }@local:
+{
+  config,
+  lib,
+  inputs,
+  ...
+}:
 let
-  inherit (local.inputs.self.components) nixology;
-
-  inherit (local.inputs.core.inputs) flake-parts;
-
-  inherit (local.config.partitions.schemas.extraInputs) flake-schemas;
-
-  implementation = {
+  flake = {
     imports = [
       flake-parts.flakeModules.bundlers
     ];
@@ -17,20 +16,12 @@ let
       };
     };
   };
+
+  inherit (inputs.self.components) nixology;
+  inherit (inputs.core.inputs) flake-parts;
+  inherit (config.partitions.schemas.extraInputs) flake-schemas;
 in
-{
-  flake.components = {
-    nixology.flake.bundlers = {
-      inherit implementation;
-
-      dependencies = [
-        nixology.core.transposition
-      ];
-
-      meta = {
-        description = "Provide support for flake `bundlers` outputs and their schema.";
-        shortDescription = "flake bundlers";
-      };
-    };
-  };
+lib.mkComponent __curPos.file {
+  modules = { inherit flake; };
+  dependencies = [ nixology.core.transposition ];
 }
