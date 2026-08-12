@@ -1,18 +1,20 @@
-{ ... }@local:
+{
+  config,
+  lib,
+  ...
+}:
 let
-  inherit (local.inputs.self.components) nixology;
+  inherit (lib) mkOption;
 
-  inherit (local.lib) mkOption;
-
-  inherit (local.lib.types)
+  inherit (lib.types)
     lazyAttrsOf
     literalExpression
     raw
     ;
 
-  inherit (local.config.partitions.schemas.extraInputs) flake-schemas;
+  inherit (config.partitions.schemas.extraInputs) flake-schemas;
 
-  implementation = {
+  flake = {
     options = {
       flake.darwinConfigurations = mkOption {
         type = lazyAttrsOf raw;
@@ -44,19 +46,13 @@ let
     };
   };
 in
-{
-  flake.components = {
-    nixology.flake.darwinConfigurations = {
-      inherit implementation;
+lib.mkComponent {
+  name = lib.basename __curPos.file;
 
-      dependencies = [
-        nixology.core.schemas
-      ];
+  modules = { inherit flake; };
 
-      meta = {
-        description = "Provide instantiated Darwin configurations for `darwin-rebuild`.";
-        shortDescription = "darwin configurations";
-      };
-    };
+  meta = {
+    description = "Provide instantiated Darwin configurations for `darwin-rebuild`.";
+    shortDescription = "darwin configurations";
   };
 }

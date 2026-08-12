@@ -1,6 +1,6 @@
-{ ... }@local:
+{ inputs, ... }:
 let
-  inherit (local.inputs) core self;
+  inherit (inputs) core self;
   inherit (core.lib.components) uses;
   inherit (self.components) nixology;
 

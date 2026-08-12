@@ -1,23 +1,26 @@
-{ ... }@local:
+{
+  config,
+  inputs,
+  lib,
+  ...
+}:
 let
-  inherit (local.inputs.self.components) nixology;
-
-  inherit (local.lib)
+  inherit (lib)
     mapAttrs
     mkOption
     ;
 
-  inherit (local.lib.types)
+  inherit (lib.types)
     lazyAttrsOf
     deferredModule
     literalExpression
     ;
 
-  inherit (local.config.partitions.schemas.extraInputs) flake-schemas;
+  inherit (config.partitions.schemas.extraInputs) flake-schemas;
 
-  moduleLocation = "${local.inputs.self.outPath}/flake.nix";
+  moduleLocation = "${inputs.self.outPath}/flake.nix";
 
-  implementation = {
+  flake = {
     options = {
       flake.homeModules = mkOption {
         type = lazyAttrsOf deferredModule;
@@ -61,19 +64,13 @@ let
     };
   };
 in
-{
-  flake.components = {
-    nixology.flake.homeModules = {
-      inherit implementation;
+lib.mkComponent {
+  name = lib.basename __curPos.file;
 
-      dependencies = [
-        nixology.core.schemas
-      ];
+  modules = { inherit flake; };
 
-      meta = {
-        description = "Provide reusable Home Manager modules through the `homeModules` flake output.";
-        shortDescription = "home manager modules";
-      };
-    };
+  meta = {
+    description = "Provide reusable Home Manager modules through the `homeModules` flake output.";
+    shortDescription = "home manager modules";
   };
 }

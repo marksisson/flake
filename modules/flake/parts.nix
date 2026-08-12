@@ -1,10 +1,8 @@
-{ ... }@local:
+{ config, inputs, ... }:
 let
-  inherit (local.inputs.self.components) nixology;
-
-  inherit (local.inputs.core.inputs) flake-parts;
-
-  inherit (local.config.partitions.schemas.extraInputs) flake-schemas;
+  inherit (inputs.self.components) nixology;
+  inherit (inputs.core.inputs) flake-parts;
+  inherit (config.partitions.schemas.extraInputs) flake-schemas;
 
   descriptions = {
     apps = "runnable programs";

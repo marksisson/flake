@@ -1,18 +1,20 @@
-{ ... }@local:
+{
+  config,
+  lib,
+  ...
+}:
 let
-  inherit (local.inputs.self.components) nixology;
+  inherit (lib) mkOption;
 
-  inherit (local.lib) mkOption;
-
-  inherit (local.lib.types)
+  inherit (lib.types)
     lazyAttrsOf
     literalExpression
     raw
     ;
 
-  inherit (local.config.partitions.schemas.extraInputs) flake-schemas;
+  inherit (config.partitions.schemas.extraInputs) flake-schemas;
 
-  implementation = {
+  flake = {
     options = {
       flake.homeConfigurations = mkOption {
         type = lazyAttrsOf raw;
@@ -51,19 +53,13 @@ let
     };
   };
 in
-{
-  flake.components = {
-    nixology.flake.homeConfigurations = {
-      inherit implementation;
+lib.mkComponent {
+  name = lib.basename __curPos.file;
 
-      dependencies = [
-        nixology.core.schemas
-      ];
+  modules = { inherit flake; };
 
-      meta = {
-        description = "Provide instantiated Home Manager configurations for specific users.";
-        shortDescription = "home manager configurations";
-      };
-    };
+  meta = {
+    description = "Provide instantiated Home Manager configurations for specific users.";
+    shortDescription = "home manager configurations";
   };
 }

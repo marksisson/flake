@@ -1,23 +1,26 @@
-{ ... }@local:
+{
+  inputs,
+  lib,
+  config,
+  ...
+}:
 let
-  inherit (local.inputs.self.components) nixology;
-
-  inherit (local.lib)
+  inherit (lib)
     mapAttrs
     mkOption
     ;
 
-  inherit (local.lib.types)
+  inherit (lib.types)
     lazyAttrsOf
     deferredModule
     literalExpression
     ;
 
-  inherit (local.config.partitions.schemas.extraInputs) flake-schemas;
+  inherit (config.partitions.schemas.extraInputs) flake-schemas;
 
-  moduleLocation = "${local.inputs.self.outPath}/flake.nix";
+  moduleLocation = "${inputs.self.outPath}/flake.nix";
 
-  implementation = {
+  flake = {
     options = {
       flake.darwinModules = mkOption {
         type = lazyAttrsOf deferredModule;
@@ -61,19 +64,13 @@ let
     };
   };
 in
-{
-  flake.components = {
-    nixology.flake.darwinModules = {
-      inherit implementation;
+lib.mkComponent {
+  name = lib.basename __curPos.file;
 
-      dependencies = [
-        nixology.core.schemas
-      ];
+  modules = { inherit flake; };
 
-      meta = {
-        description = "Provide reusable nix-darwin modules through the `darwinModules` flake output.";
-        shortDescription = "darwin modules";
-      };
-    };
+  meta = {
+    description = "Provide reusable nix-darwin modules through the `darwinModules` flake output.";
+    shortDescription = "darwin modules";
   };
 }
