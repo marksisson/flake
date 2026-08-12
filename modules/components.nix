@@ -1,6 +1,6 @@
-{ ... }@local:
+{ inputs, ... }:
 let
-  inherit (local.inputs) core;
+  inherit (inputs) core;
 in
 {
   # export core.nix components as flake.nix components

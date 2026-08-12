@@ -1,10 +1,13 @@
-{ ... }@local:
+{
+  config,
+  inputs,
+  lib,
+  ...
+}:
 let
-  inherit (local.inputs.self.components) nixology;
-
-  inherit (local.config.partitions.development.extraInputs) git-hooks;
-
-  inherit (local.lib) mkIf;
+  inherit (inputs.self.components) nixology;
+  inherit (config.partitions.development.extraInputs) git-hooks;
+  inherit (lib) mkIf;
 
   implementation = {
     imports = [
@@ -12,9 +15,9 @@ let
     ];
 
     perSystem =
-      { ... }@module:
+      { config, ... }:
       let
-        cfg = module.config.pre-commit;
+        cfg = config.pre-commit;
       in
       {
         shellEnvironments.default = mkIf (cfg.settings.enabledPackages != [ ]) {

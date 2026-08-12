@@ -1,14 +1,14 @@
-{ ... }@local:
+{ inputs, lib, ... }:
 let
-  inherit (local.inputs.self.components) nixology;
+  inherit (inputs.self.components) nixology;
 
-  inherit (local.lib)
+  inherit (lib)
     mapAttrs
     mkIf
     mkOption
     ;
 
-  inherit (local.lib.types)
+  inherit (lib.types)
     anything
     lazyAttrsOf
     lines
@@ -18,7 +18,7 @@ let
     submodule
     ;
 
-  inherit (local.inputs) core;
+  inherit (inputs) core;
 
   inherit (core.lib.parts) mkPerSystemOption;
 
@@ -71,8 +71,8 @@ let
 
     config = {
       perSystem =
-        { pkgs, ... }@module:
-        mkIf (module.config.shellEnvironments != { }) {
+        { config, pkgs, ... }:
+        mkIf (config.shellEnvironments != { }) {
           devShells = mapAttrs (
             name: shellEnv:
             pkgs.mkShell.override shellEnv.mkShellOverrides {
@@ -84,7 +84,7 @@ let
                 stdenv
                 ;
             }
-          ) module.config.shellEnvironments;
+          ) config.shellEnvironments;
         };
     };
   };

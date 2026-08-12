@@ -1,6 +1,6 @@
-{ ... }@local:
+{ lib, ... }:
 let
-  inherit (local.lib) genAttrs;
+  inherit (lib) genAttrs;
 
   development =
     let

@@ -1,12 +1,10 @@
-{ ... }@local:
+{ inputs, lib, ... }:
 let
-  inherit (local.inputs.self.components) nixology;
-
-  inherit (local.lib) mkDefault;
+  inherit (lib) mkDefault;
 
   implementation = {
     perSystem =
-      { pkgs, ... }@module:
+      { config, pkgs, ... }:
       {
         shellEnvironments.nix.packages = [
           pkgs.nix-output-monitor
@@ -20,7 +18,7 @@ let
           nixf-diagnose = {
             enable = mkDefault true;
             excludes = mkDefault [
-              module.config.treefmt.projectRootFile
+              config.treefmt.projectRootFile
             ];
           };
 
@@ -51,7 +49,7 @@ in
     nixology.environments.nix = {
       inherit implementation;
 
-      dependencies = [
+      dependencies = with inputs.self.components; [
         nixology.extra.shellEnvironments
         nixology.tools.treefmt
       ];

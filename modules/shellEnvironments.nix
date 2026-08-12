@@ -1,14 +1,12 @@
 {
-  partitions.development = {
-    module = {
-      perSystem =
-        { ... }@module:
-        let
-          inherit (module.config) shellEnvironments;
-        in
-        {
-          shellEnvironments.default = shellEnvironments.nix;
-        };
-    };
+  partitions.development.module = {
+    perSystem =
+      { config, ... }:
+      let
+        inherit (config) shellEnvironments;
+      in
+      {
+        shellEnvironments.default = shellEnvironments.nix;
+      };
   };
 }
