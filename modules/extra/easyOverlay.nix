@@ -1,19 +1,14 @@
-{ ... }@local:
+{ inputs, ... }:
 let
-  inherit (local.inputs.self.components) nixology;
-
-  inherit (local.inputs.core.inputs) flake-parts;
-
-  implementation = flake-parts.flakeModules.easyOverlay;
+  inherit (inputs.core.inputs) flake-parts;
+  module = flake-parts.flakeModules.easyOverlay;
 in
 {
   flake.components = {
     nixology.extra.easyOverlay = {
-      inherit implementation;
+      inherit module;
 
-      dependencies = [
-        nixology.flake.overlays
-      ];
+      dependencies = with inputs.self.components; [ nixology.flake.overlays ];
 
       meta = {
         description = "Expose the upstream flake-parts easyOverlay module as a nixology component.";

@@ -1,8 +1,6 @@
 { inputs, lib, ... }:
 let
-  inherit (lib) mkDefault;
-
-  implementation = {
+  module = {
     perSystem =
       { config, pkgs, ... }:
       {
@@ -11,19 +9,19 @@ let
         ];
 
         treefmt.programs = {
-          nixfmt.enable = mkDefault true;
-          deadnix.enable = mkDefault true;
-          zizmor.enable = mkDefault true;
+          nixfmt.enable = lib.mkDefault true;
+          deadnix.enable = lib.mkDefault true;
+          zizmor.enable = lib.mkDefault true;
 
           nixf-diagnose = {
-            enable = mkDefault true;
-            excludes = mkDefault [
+            enable = lib.mkDefault true;
+            excludes = lib.mkDefault [
               config.treefmt.projectRootFile
             ];
           };
 
           yamlfmt = {
-            enable = mkDefault true;
+            enable = lib.mkDefault true;
             settings.formatter = {
               type = "basic";
               retain_line_breaks = true;
@@ -34,20 +32,16 @@ let
       };
   };
 
-  partitionedImplementation = {
-    partitions.development = {
-      module = implementation;
-    };
+  partitionedModule = {
+    partitions.development = { inherit module; };
   };
 in
 {
-  imports = [
-    partitionedImplementation
-  ];
+  imports = [ partitionedModule ];
 
   flake.components = {
     nixology.environments.nix = {
-      inherit implementation;
+      inherit module;
 
       dependencies = with inputs.self.components; [
         nixology.extra.shellEnvironments

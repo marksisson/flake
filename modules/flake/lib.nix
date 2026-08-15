@@ -1,38 +1,35 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 let
-  inherit (inputs) core self;
-  inherit (core.lib.components) uses;
-  inherit (self.components) nixology;
-
-  implementation = {
-    flake.lib = core.lib.extend (
-      final: _prev: {
+  module = {
+    flake.lib = inputs.core.lib.extend (
+      final: prev: {
         parts.mkFlake =
           args: module:
-          final.mkFlake args {
+          prev.mkFlake args {
             imports = [
               module
             ]
-            ++ [
-              (uses {
-                components = [
-                  nixology.flake.apps
-                  nixology.flake.checks
-                  nixology.flake.devShells
-                  nixology.flake.formatter
-                  nixology.flake.legacyPackages
-                  nixology.flake.nixosConfigurations
-                  nixology.flake.nixosModules
-                  nixology.flake.overlays
-                  nixology.flake.packages
-                ];
-              })
-            ];
+            ++ (
+              with inputs.self.components;
+              lib.components.implementationsOf [
+                nixology.flake.apps
+                nixology.flake.checks
+                nixology.flake.devShells
+                nixology.flake.formatter
+                nixology.flake.legacyPackages
+                nixology.flake.nixosConfigurations
+                nixology.flake.nixosModules
+                nixology.flake.overlays
+                nixology.flake.packages
+              ]
+            );
           };
+
+        mkFlake = final.parts.mkFlake;
       }
     );
   };
 in
 {
-  imports = [ implementation ];
+  imports = [ module ];
 }

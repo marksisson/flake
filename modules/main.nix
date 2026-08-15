@@ -1,15 +1,14 @@
 { inputs, ... }:
 let
-  inherit (inputs) core;
-
-  inherit (core.components) nixology;
-  inherit (core.lib.components) uses;
+  inherit (inputs.core.lib.components) implementationsOf;
 in
-uses {
-  components = [
-    nixology.core.components
-    nixology.core.lib
-    nixology.core.partitions
-    nixology.extra.touchup
-  ];
+{
+  imports =
+    with inputs.core.components;
+    implementationsOf [
+      nixology.core.components
+      nixology.core.lib
+      nixology.core.partitions
+      nixology.extra.touchup
+    ];
 }

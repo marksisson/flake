@@ -16,10 +16,10 @@ let
     packages = "nixpkgs packages";
   };
 
-  mkComponent =
+  mkPartComponent =
     name: shortDescription:
     let
-      implementation = {
+      module = {
         imports = [
           "${flake-parts}/modules/${name}.nix"
         ];
@@ -28,7 +28,7 @@ let
       };
     in
     {
-      inherit implementation;
+      inherit module;
 
       dependencies = [
         nixology.core.schemas
@@ -41,10 +41,10 @@ let
       };
     };
 
-  parts = builtins.mapAttrs mkComponent descriptions;
+  parts = builtins.mapAttrs mkPartComponent descriptions;
 in
 {
-  imports = map (component: component.implementation) [
+  imports = map (component: component.module) [
     parts.checks
     parts.devShells
     parts.formatter

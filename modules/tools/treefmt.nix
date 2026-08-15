@@ -1,19 +1,17 @@
 { config, inputs, ... }:
 let
-  implementation = config.partitions.development.extraInputs.treefmt.flakeModule;
+  module = config.partitions.development.extraInputs.treefmt.flakeModule;
 
-  partitionedImplementation = {
-    partitions.development.module = implementation;
+  partitionedModule = {
+    partitions.development = { inherit module; };
   };
 in
 {
-  imports = [
-    partitionedImplementation
-  ];
+  imports = [ partitionedModule ];
 
   flake.components = {
     nixology.tools.treefmt = {
-      inherit implementation;
+      inherit module;
 
       dependencies = with inputs.self.components; [
         nixology.extra.shellEnvironments

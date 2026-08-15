@@ -22,7 +22,7 @@ let
 
   inherit (core.lib.parts) mkPerSystemOption;
 
-  implementation = {
+  module = {
     options = {
       perSystem = mkPerSystemOption (
         { pkgs, ... }:
@@ -89,18 +89,16 @@ let
     };
   };
 
-  partitionedImplementation = {
-    partitions.development.module = implementation;
+  partitionedModule = {
+    partitions.development = { inherit module; };
   };
 in
 {
-  imports = [
-    partitionedImplementation
-  ];
+  imports = [ partitionedModule ];
 
   flake.components = {
     nixology.extra.shellEnvironments = {
-      inherit implementation;
+      inherit module;
 
       dependencies = [
         nixology.systems.default

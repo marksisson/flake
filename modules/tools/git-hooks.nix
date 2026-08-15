@@ -5,11 +5,9 @@
   ...
 }:
 let
-  inherit (inputs.self.components) nixology;
   inherit (config.partitions.development.extraInputs) git-hooks;
-  inherit (lib) mkIf;
 
-  implementation = {
+  module = {
     imports = [
       git-hooks.flakeModule
     ];
@@ -20,27 +18,25 @@ let
         cfg = config.pre-commit;
       in
       {
-        shellEnvironments.default = mkIf (cfg.settings.enabledPackages != [ ]) {
+        shellEnvironments.default = lib.mkIf (cfg.settings.enabledPackages != [ ]) {
           packages = cfg.settings.enabledPackages;
           shellHook = cfg.shellHook;
         };
       };
   };
 
-  partitionedImplementation = {
-    partitions.development.module = implementation;
+  partitionedModule = {
+    partitions.development = { inherit module; };
   };
 in
 {
-  imports = [
-    partitionedImplementation
-  ];
+  imports = [ partitionedModule ];
 
   flake.components = {
     nixology.tools.git-hooks = {
-      inherit implementation;
+      inherit module;
 
-      dependencies = [
+      dependencies = with inputs.self.components; [
         nixology.extra.shellEnvironments
         nixology.systems.default
       ];
