@@ -1,9 +1,5 @@
 { config, inputs, ... }:
 let
-  inherit (inputs.self.components) nixology;
-  inherit (inputs.core.inputs) flake-parts;
-  inherit (config.partitions.schemas.extraInputs) flake-schemas;
-
   descriptions = {
     apps = "runnable programs";
     checks = "derivations for testing evaluation of this flake";
@@ -16,21 +12,27 @@ let
     packages = "nixpkgs packages";
   };
 
+  partition = "schemas";
+
+  coreInputs = inputs.core.inputs;
+
+  partitionedInputs = config.partitions.${partition}.extraInputs;
+
   mkPartComponent =
     name: shortDescription:
     let
       module = {
         imports = [
-          "${flake-parts}/modules/${name}.nix"
+          "${coreInputs.flake-parts}/modules/${name}.nix"
         ];
 
-        config.flake.schemas.${name} = flake-schemas.exportedSchemas.${name};
+        config.flake.schemas.${name} = partitionedInputs.flake-schemas.exportedSchemas.${name};
       };
     in
     {
       inherit module;
 
-      dependencies = [
+      dependencies = with inputs.self.components; [
         nixology.core.schemas
         nixology.core.transposition
       ];

@@ -5,20 +5,23 @@
   ...
 }:
 let
+  partition = "schemas";
+
+  coreInputs = inputs.core.inputs;
+
+  partitionedInputs = config.partitions.${partition}.extraInputs;
+
   flake = {
     imports = [
-      flake-parts.flakeModules.bundlers
+      coreInputs.flake-parts.flakeModules.bundlers
     ];
 
     config = {
       flake.schemas = {
-        inherit (flake-schemas.exportedSchemas) bundlers;
+        inherit (partitionedInputs.flake-schemas.exportedSchemas) bundlers;
       };
     };
   };
-
-  inherit (inputs.core.inputs) flake-parts;
-  inherit (config.partitions.schemas.extraInputs) flake-schemas;
 in
 lib.mkComponent {
   name = lib.basename __curPos.file;

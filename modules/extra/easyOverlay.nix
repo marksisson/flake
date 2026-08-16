@@ -1,7 +1,8 @@
 { inputs, ... }:
 let
-  inherit (inputs.core.inputs) flake-parts;
-  module = flake-parts.flakeModules.easyOverlay;
+  coreInputs = inputs.core.inputs;
+
+  module = coreInputs.flake-parts.flakeModules.easyOverlay;
 in
 {
   flake.components = {

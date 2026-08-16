@@ -1,11 +1,7 @@
-{ inputs, ... }:
-let
-  inherit (inputs.core.lib.components) implementationsOf;
-in
-{
+{ inputs, lib, ... }: {
   imports =
     with inputs.core.components;
-    implementationsOf [
+    lib.components.implementationsFrom [
       nixology.core.components
       nixology.core.lib
       nixology.core.partitions

@@ -1,29 +1,36 @@
-{ config, inputs, ... }:
+{
+  config,
+  inputs,
+  lib,
+  ...
+}:
 let
-  module = config.partitions.development.extraInputs.treefmt.flakeModule;
+  partition = "development";
 
-  partitionedModule = {
-    partitions.development = { inherit module; };
+  partitionedInputs = config.partitions.${partition}.extraInputs;
+
+  flake = {
+    imports = [ partitionedInputs.treefmt.flakeModule ];
   };
 in
-{
-  imports = [ partitionedModule ];
+lib.mkComponent {
+  name = lib.basename __curPos.file;
 
-  flake.components = {
-    nixology.tools.treefmt = {
-      inherit module;
+  dogfoodPartition = partition;
 
-      dependencies = with inputs.self.components; [
-        nixology.extra.shellEnvironments
-        nixology.flake.checks
-        nixology.flake.formatter
-        nixology.systems.default
-      ];
+  subdomain = "tools";
 
-      meta = {
-        description = "Integrate treefmt-nix formatting checks and formatter outputs.";
-        shortDescription = "treefmt tooling";
-      };
-    };
+  modules = { inherit flake; };
+
+  dependencies = with inputs.self.components; [
+    nixology.extra.shellEnvironments
+    nixology.flake.checks
+    nixology.flake.formatter
+    nixology.systems.default
+  ];
+
+  meta = {
+    description = "Integrate treefmt-nix formatting checks and formatter outputs.";
+    shortDescription = "treefmt tooling";
   };
 }

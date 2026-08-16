@@ -5,11 +5,13 @@
   ...
 }:
 let
-  inherit (config.partitions.development.extraInputs) git-hooks;
+  partition = "development";
 
-  module = {
+  partitionedInputs = config.partitions.${partition}.extraInputs;
+
+  flake = {
     imports = [
-      git-hooks.flakeModule
+      partitionedInputs.git-hooks.flakeModule
     ];
 
     perSystem =
@@ -24,27 +26,23 @@ let
         };
       };
   };
-
-  partitionedModule = {
-    partitions.development = { inherit module; };
-  };
 in
-{
-  imports = [ partitionedModule ];
+lib.mkComponent {
+  name = lib.basename __curPos.file;
 
-  flake.components = {
-    nixology.tools.git-hooks = {
-      inherit module;
+  dogfoodPartition = partition;
 
-      dependencies = with inputs.self.components; [
-        nixology.extra.shellEnvironments
-        nixology.systems.default
-      ];
+  modules = { inherit flake; };
 
-      meta = {
-        description = "Integrate git-hooks.nix pre-commit hooks with the default development shell.";
-        shortDescription = "git hooks tooling";
-      };
-    };
+  subdomain = "tools";
+
+  dependencies = with inputs.self.components; [
+    nixology.extra.shellEnvironments
+    nixology.systems.default
+  ];
+
+  meta = {
+    description = "Integrate git-hooks.nix pre-commit hooks with the default development shell.";
+    shortDescription = "git hooks tooling";
   };
 }

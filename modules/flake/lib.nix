@@ -11,7 +11,7 @@ let
             ]
             ++ (
               with inputs.self.components;
-              lib.components.implementationsOf [
+              lib.components.implementationsFrom [
                 nixology.flake.apps
                 nixology.flake.checks
                 nixology.flake.devShells

@@ -12,7 +12,9 @@ let
     raw
     ;
 
-  inherit (config.partitions.schemas.extraInputs) flake-schemas;
+  partition = "schemas";
+
+  partitionedInputs = config.partitions.${partition}.extraInputs;
 
   flake = {
     options = {
@@ -48,7 +50,7 @@ let
 
     config = {
       flake.schemas = {
-        inherit (flake-schemas.exportedSchemas) homeConfigurations;
+        inherit (partitionedInputs.flake-schemas.exportedSchemas) homeConfigurations;
       };
     };
   };
